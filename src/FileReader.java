@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class FileReader {
 
     public static User findUser(String users) {
-        File UserInput = new File(users);
+        File UserInput = new File(users + ".txt");
 
 
         Scanner user = null;
@@ -48,7 +48,6 @@ public class FileReader {
             int month = weight.nextInt();
             int year = weight.nextInt();
             //System.out.print(Sessions);
-            System.out.println(day + "/" + month + "/" + year);
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, month -1);
@@ -67,7 +66,6 @@ public class FileReader {
                 int bad = line.nextInt();
                 int[] form = {good,okay,bad};
                 ses.addWeight(theWeight,form);
-                System.out.println(theWeight + " " + good  + " " + okay + " " + bad);
                 line.close();
             }
             weight.close();
