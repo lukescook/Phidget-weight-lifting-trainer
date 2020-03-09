@@ -7,17 +7,15 @@ public class FileWriter {
 
     public static void writeInfo(String userFileName, User a){
 
-        File userPutFile = new File(userFileName);
-
-        PrintWriter userOutput = null;
+        File userPutFile = new File(userFileName +".txt");
 
         try {
-            userOutput = new PrintWriter(userPutFile);
+            PrintWriter userOutput = new PrintWriter(userPutFile);
+            FileWriter.writeUser(userOutput,a);
+            userOutput.close();
         }catch (FileNotFoundException e){
             System.out.println("Sorry I cannot find " + userFileName);
         }
-        FileWriter.writeUser(userOutput,a);
-        userOutput.close();
 
     }
     private static void writeUser(PrintWriter user, User u){
