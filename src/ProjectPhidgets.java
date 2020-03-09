@@ -2,11 +2,14 @@
  * Copyright 2007 Phidgets Inc.  All rights reserved.
  */
 
+import java.io.PrintWriter;
+
 import com.phidgets.*;
 import com.phidgets.event.*;
 
 public class ProjectPhidgets
 {
+
 	//Messages
 	public final static String IDLE = "Sign in to use";
 	public final static String WELCOME = "Hello ";
@@ -51,11 +54,15 @@ public class ProjectPhidgets
 	public static double lastMotorPos = 0;
 	public static String loggedInUser;
 	public static int[][][][] session;
+	public static User currentUser = null;
 	
 	//Interfaces
 	public static TextLCDPhidget lcd;
 	public static InterfaceKitPhidget ik;
 	public static ServoPhidget servo;
+	public static FileReader reader;
+	public static FileWriter writer;
+	public static Session thisSession;
 	
 	public static final void main(String args[]) throws Exception {
 		//InterfaceKitPhidget ik;
@@ -166,6 +173,7 @@ public class ProjectPhidgets
 							allowForceReading = false;
 							lcd.setDisplayString(0, BAD_FORM);
 							badForm++;
+							thisSession.incrementForWeightBad(70);
 							if(currentSelectedProgram == 1){
 								repCounter++;
 								if(repCounter % 10 == 0){
@@ -235,6 +243,7 @@ public class ProjectPhidgets
 								}
 							}
 							okayForm++;
+							thisSession.incrementForWeightOkay(70);
 							updateDisplay();
 						} catch (PhidgetException e) {
 							e.printStackTrace();
@@ -275,6 +284,7 @@ public class ProjectPhidgets
 								}
 							}
 							goodForm++;
+							thisSession.incrementForWeightGood(70);
 							updateDisplay();
 						} catch (PhidgetException e) {
 							e.printStackTrace();
@@ -289,6 +299,34 @@ public class ProjectPhidgets
 					
 				}
 				
+				if (sensor == SENSOR_SELECT_BUTTON_PORT){
+					if (value < 500)
+					{
+						try {
+							if(onMenu){
+								onMenu = false;
+								//lcd.setDisplayString(0, "Let's get started");
+								currentUser = reader.findUser("0102388e47.txt");
+								thisSession = currentUser.addNewSession();
+								lcd.setDisplayString(0, WELCOME + currentUser.getOTHERNAMES());
+								lcd.setDisplayString(1, BEGIN_SESSION);
+								goodForm = 0;
+								okayForm = 0;
+								badForm = 0;
+								
+								
+								
+							}
+						} catch (PhidgetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+					
+					
+				}
+				
 				if (sensor == SENSOR_EXIT_BUTTON_PORT){
 					if (value < 200)
 					{
@@ -296,8 +334,10 @@ public class ProjectPhidgets
 							if(!onMenu){
 								lcd.setDisplayString(0, SIGNING_OUT);
 								//Save data from this session
+								writer.writeInfo("0102388e47.txt", currentUser);
 								
 								//Reset data
+								thisSession = null;
 								loggedInUser = null;
 								/*for(int i = 0; i < session.length; i++){
 									session[i] = 0;
@@ -317,27 +357,7 @@ public class ProjectPhidgets
 					
 				}
 				
-				if (sensor == SENSOR_SELECT_BUTTON_PORT){
-					if (value < 500)
-					{
-						try {
-							if(onMenu){
-								onMenu = false;
-								lcd.setDisplayString(0, "Let's get started");
-								lcd.setDisplayString(1, BEGIN_SESSION);
-								goodForm = 0;
-								okayForm = 0;
-								badForm = 0;
-							}
-						} catch (PhidgetException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-					}
-					
-					
-				}
+				
 			}
 		});
 		
