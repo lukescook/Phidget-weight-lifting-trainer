@@ -7,15 +7,18 @@ public class FileWriter {
 
     public static void writeInfo(String userFileName, User a){
 
-        File userPutFile = new File(userFileName +".txt");
+        File userPutFile = new File(userFileName);
+
+        PrintWriter userOutput = null;
 
         try {
-            PrintWriter userOutput = new PrintWriter(userPutFile);
-            FileWriter.writeUser(userOutput,a);
-            userOutput.close();
+            userOutput = new PrintWriter(userPutFile);
         }catch (FileNotFoundException e){
-            System.out.println("Sorry I cannot find " + userFileName);
+            
+        	System.out.println("Sorry I cannot find " + userFileName);
         }
+        FileWriter.writeUser(userOutput,a);
+        userOutput.close();
 
     }
     private static void writeUser(PrintWriter user, User u){
@@ -28,8 +31,10 @@ public class FileWriter {
                 list += elem.getDateWrite() + ",";
                 for (Integer form : val) {
                     list += form + "," + elem.getFormForWeight(form)[0] + "," + elem.getFormForWeight(form)[1] + "," + elem.getFormForWeight(form)[2] + ";";
+                    
                 }
                 list = list.replaceAll(".$", "\n");
+                
             }
         }
         user.print(list.trim());
